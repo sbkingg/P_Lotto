@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+function FilterSuggestion() {
+  const [suggestedFilters, setSuggestedFilters] = useState([]);
+
+  const handleAutoRecommend = async () => {
+    try {
+      const response = await axios.get("/api/recommend-best");
+      setSuggestedFilters(response.data.best_strategies);
+    } catch (error) {
+      alert("추천 전략을 불러오지 못했습니다.");
+    }
+  };
+
 const FilterSuggestion = () => {
   const [filters, setFilters] = useState([]);
 
@@ -13,20 +25,18 @@ const FilterSuggestion = () => {
       });
   }, []);
 
-  return (
+ return (
     <div>
-      <h2 className="text-lg font-semibold mb-2">추천 필터 목록</h2>
-      {filters.length === 0 ? (
-        <p className="text-gray-500">불러온 필터가 없습니다.</p>
-      ) : (
-        <ul className="list-disc pl-6 text-sm">
-          {filters.map((filter, idx) => (
-            <li key={idx}>✔ {filter.description}</li>
+      <button onClick={handleAutoRecommend}>전략 추천 받아보기</button>
+      {suggestedFilters.length > 0 && (
+        <ul>
+          {suggestedFilters.map((strategy, index) => (
+            <li key={index}>{strategy}</li>
           ))}
         </ul>
       )}
     </div>
   );
-};
+}
 
 export default FilterSuggestion;

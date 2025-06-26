@@ -1,19 +1,10 @@
 import React from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-function ChartView({ data }) {
+function ChartView() {
   return (
-    <div className="mt-6">
-      <h2 className="text-lg font-bold">전략별 적중 수 그래프</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <XAxis dataKey="round" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="matched" fill="#8884d8" name="적중 수" />
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="p-4 bg-white rounded-xl shadow-md mb-4">
+      <h2 className="text-lg font-semibold mb-2">전략별 적중 수 그래프</h2>
+      <p className="text-sm text-gray-500">그래프 준비 중...</p>
     </div>
   );
 }
