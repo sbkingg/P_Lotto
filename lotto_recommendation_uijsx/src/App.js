@@ -1,3 +1,4 @@
+// src/App.js
 import React from "react";
 import FilterSuggestion from "./components/FilterSuggestion";
 import StrategySimulator from "./components/StrategySimulator";

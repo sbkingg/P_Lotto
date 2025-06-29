@@ -1,3 +1,4 @@
+# simulate_utils.py
 import random
 import csv
 from datetime import datetime
@@ -47,8 +48,22 @@ def load_history():
     return records
 
 def get_stats(from_date, to_date):
+    try:
+        date_format = "%Y-%m-%d"
+        from_dt = datetime.strptime(from_date, date_format)
+        to_dt = datetime.strptime(to_date, date_format)
+    except Exception as e:
+        raise ValueError(f"Invalid date format: {e}")
+
     data = load_history()
-    filtered = [r for r in data if from_date <= r["date"] <= to_date]
+    filtered = []
+    for r in data:
+        try:
+            record_date = datetime.strptime(r["date"], "%Y-%m-%d")
+            if from_dt <= record_date <= to_dt:
+                filtered.append(r)
+        except Exception:
+            continue  # 날짜 파싱 오류 무시
 
     stat = {}
     for row in filtered:
@@ -66,7 +81,7 @@ def get_stats(from_date, to_date):
         avg = v["total"] / v["count"] if v["count"] > 0 else 0
         summary.append({
             "strategy": k,
-            "average": avg,
+            "average": round(avg, 2),
             "max": v["max"],
             "min": v["min"]
         })
