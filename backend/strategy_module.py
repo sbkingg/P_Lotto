@@ -1,4 +1,5 @@
 # strategy_module.py
+import json
 
 def get_filters():
     """
@@ -6,9 +7,9 @@ def get_filters():
     실제 서비스에서는 DB 조회 또는 분석 기반 동적 구성 가능.
     """
     return [
-        {"name": "proto", "description": "상위 20개 중 3~5개 포함"},
-        {"name": "v90", "description": "상위 20개 중 2~5개 포함"},
-        {"name": "hybrid", "description": "통계 기반 혼합 전략"},
+        {"name": "proto", "description": "상위 20번호 중 3~5개 포함, 나머지는 하위 번호"},
+        {"name": "v90", "description": "상위 20번호 중 2~5개 포함, 나머지는 하위 번호"},
+        {"name": "hybrid", "description": "머신러닝 + 통계 혼합 방식"}
     ]
 
 
