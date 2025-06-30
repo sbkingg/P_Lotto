@@ -1,15 +1,19 @@
-// components/StrategySimulator.js
+// src/components/StrategySimulator.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip,
+  CartesianGrid, ResponsiveContainer, Legend
+} from 'recharts';
 
-function StrategySimulator({ selectedFilter }) {
+function StrategySimulator({ selectedFilter, onHistoryUpdate }) {
   const [strategy, setStrategy] = useState('proto');
   const [result, setResult] = useState(null);
-  const [history, setHistory] = useState([]);
+  const [localHistory, setLocalHistory] = useState([]);  // 이름 변경
   const [stats, setStats] = useState(null);
   const [best, setBest] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSimulate = () => {
     setLoading(true);
@@ -20,8 +24,12 @@ function StrategySimulator({ selectedFilter }) {
     .then(res => {
       setResult(res.data);
       fetchStats();
-      fetchHistory();
       fetchBest();
+
+      if (res.data.results) {
+        setLocalHistory(res.data.results);
+        onHistoryUpdate(res.data.results);  // App으로 전달
+      }
     })
     .catch(() => setResult({ error: '시뮬레이션 실패' }))
     .finally(() => setLoading(false));
@@ -30,7 +38,10 @@ function StrategySimulator({ selectedFilter }) {
   const fetchHistory = () => {
     axios.get('/api/history')
       .then(res => {
-        if (res.data && res.data.logs) setHistory(res.data.logs);
+        if (res.data?.logs) {
+          setLocalHistory(res.data.logs);
+          onHistoryUpdate(res.data.logs);  // App으로 전달
+        }
       });
   };
 
@@ -44,12 +55,12 @@ function StrategySimulator({ selectedFilter }) {
   const fetchBest = () => {
     axios.get('/api/recommend-best')
       .then(res => {
-        if (res.data && res.data.best_strategies) setBest(res.data.best_strategies);
+        if (res.data?.best_strategies) setBest(res.data.best_strategies);
       });
   };
 
   const handleDownload = () => {
-    const csv = convertToCSV(history);
+    const csv = convertToCSV(localHistory);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, 'simulation_logs.csv');
   };
@@ -99,13 +110,13 @@ function StrategySimulator({ selectedFilter }) {
       {best.length > 0 && (
         <div className="text-sm">
           <h3 className="font-medium mt-2 mb-1">📌 추천 전략</h3>
-            <ul className="list-disc ml-6">
-              {best.map((s, i) => (
-                <li key={i} className="text-indigo-700 font-medium">
-                  {`${s.rank}위 - ${s.name} (score: ${s.score})`}
-                </li>
-              ))}
-            </ul>
+          <ul className="list-disc ml-6">
+            {best.map((s, i) => (
+              <li key={i} className="text-indigo-700 font-medium">
+                {`${s.rank}위 - ${s.name} (score: ${s.score})`}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

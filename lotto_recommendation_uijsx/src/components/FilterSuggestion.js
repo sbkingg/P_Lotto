@@ -15,7 +15,7 @@ function FilterSuggestion({ onSelectFilter }) {
         setFilters(filterList);
         if (filterList.length > 0) {
           setSelected(filterList[0].name);
-          onSelect && onSelect(filterList[0].name);  // 기본 선택 전달
+          onSelectFilter && onSelectFilter(filterList[0].name);  // ✅ 수정
         }
       })
       .catch(error => console.error("필터 불러오기 실패:", error));
@@ -36,7 +36,7 @@ function FilterSuggestion({ onSelectFilter }) {
   const handleChange = (e) => {
     const value = e.target.value;
     setSelected(value);
-    onSelect && onSelect(value);
+    onSelectFilter && onSelectFilter(value);  // ✅ 수정
   };
 
   return (

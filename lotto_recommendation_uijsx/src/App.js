@@ -7,6 +7,7 @@ import DownloadLogs from "./components/DownloadLogs";
 
 function App() {
   const [selectedFilter, setSelectedFilter] = useState(null);
+  const [history, setHistory] = useState([]); // ✅ 시뮬레이션 결과 저장용
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-10">
@@ -15,13 +16,13 @@ function App() {
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <ChartView />
-          <DownloadLogs />
+          <ChartView history={history} />
+          <DownloadLogs data={history} />
         </div>
         <div>
           <FilterSuggestion onSelectFilter={setSelectedFilter} />
-          <StrategySimulator selectedFilter={selectedFilter} />
-          </div>
+          <StrategySimulator selectedFilter={selectedFilter} onHistoryUpdate={setHistory} />
+        </div>
       </div>
     </div>
   );
