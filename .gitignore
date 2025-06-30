@@ -1,17 +1,44 @@
-# Python
-__pycache__/
-*.pyc
-venv/
-.env
-
-# Node
+# ===================
+# ✅ Node (React Frontend)
+# ===================
 node_modules/
 build/
+*.log
+npm-debug.log*
 
-# Flask
+# ===================
+# ✅ Python / Flask (Backend)
+# ===================
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+venv/
+env/
 logs/
 instance/
+*.sqlite3
 
-# VSCode
-.vscode/
+# ===================
+# ✅ 환경 변수 파일
+# ===================
+.env
+.env.*
+
+# ===================
+# ✅ macOS / Windows
+# ===================
 .DS_Store
+Thumbs.db
+
+# ===================
+# ✅ Visual Studio Code
+# ===================
+.vscode/
+
+# ===================
+# ✅ 기타 (테스트, 백업 등)
+# ===================
+*.bak
+*.swp
+*.tmp
