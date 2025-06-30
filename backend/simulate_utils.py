@@ -1,3 +1,5 @@
+# backend/simulate_utils.py
+import os
 import random
 import csv
 from datetime import datetime
@@ -12,7 +14,7 @@ def simulate_strategy(strategy_name, filter_name=None):
             "round": f"Trial {i+1}",
             "matched": match,
             "strategy": strategy_name,
-            "filter": filter_name or "기본값",  # ✅ 필터 기본값 설정
+            "filter": filter_name or "기본값",
             "date": datetime.now().strftime("%Y-%m-%d")
         })
 
@@ -27,18 +29,21 @@ def simulate_strategy(strategy_name, filter_name=None):
 
 
 def save_history(rows):
+    is_new_file = not os.path.exists(LOG_PATH)
     with open(LOG_PATH, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
             fieldnames=["date", "round", "strategy", "matched", "filter"]
         )
+        if is_new_file or os.path.getsize(LOG_PATH) == 0:
+            writer.writeheader()
         for row in rows:
             writer.writerow({
                 "date": row["date"],
                 "round": row["round"],
                 "strategy": row["strategy"],
                 "matched": row["matched"],
-                "filter": row.get("filter", "기본값")  # ✅ 누락 방지
+                "filter": row.get("filter", "기본값")
             })
 
 
