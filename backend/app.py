@@ -36,10 +36,12 @@ def run_simulation():
     try:
         data = request.get_json()
         strategy = data.get("strategy")
+        filter_name = data.get("filter", "기본값")  # 새로 전달된 필터
+
         if not strategy:
             return jsonify({"error": "Strategy name is required"}), 400
 
-        result = simulate_strategy(strategy)
+        result = simulate_strategy(strategy, selected_filter)  # 📌 filter 전달
         return jsonify(result)
 
     except Exception as e:

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
 
-function StrategySimulator() {
+function StrategySimulator({ selectedFilter }) {
   const [strategy, setStrategy] = useState('proto');
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
@@ -12,14 +12,19 @@ function StrategySimulator() {
   const [best, setBest] = useState([]);
 
   const handleSimulate = () => {
-    axios.post('/api/simulate', { strategy })
-      .then(res => {
-        setResult(res.data);
-        fetchStats();
-        fetchHistory();
-        fetchBest();
-      })
-      .catch(() => setResult({ error: '시뮬레이션 실패' }));
+    setLoading(true);
+    axios.post('/api/simulate', {
+      strategy,
+      filter: selectedFilter || '기본값'
+    })
+    .then(res => {
+      setResult(res.data);
+      fetchStats();
+      fetchHistory();
+      fetchBest();
+    })
+    .catch(() => setResult({ error: '시뮬레이션 실패' }))
+    .finally(() => setLoading(false));
   };
 
   const fetchHistory = () => {

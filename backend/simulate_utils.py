@@ -5,7 +5,7 @@ from datetime import datetime
 
 LOG_PATH = "logs/simulation_logs.csv"
 
-def simulate_strategy(strategy_name):
+def simulate_strategy(strategy_name, filter_name="기본값"):
     results = []
     for i in range(10):
         match = random.randint(0, 6)
@@ -13,6 +13,7 @@ def simulate_strategy(strategy_name):
             "round": f"Trial {i+1}",
             "matched": match,
             "strategy": strategy_name,
+            "filter": filter_name,
             "date": datetime.now().strftime("%Y-%m-%d")
         })
 
