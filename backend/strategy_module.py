@@ -1,42 +1,91 @@
 # backend/strategy_module.py
 
+import random
+from datetime import datetime
+
+# ------------------------------------
+# 🎯 필터 추천 목록 (설명 포함)
+# ------------------------------------
 def get_filters():
-    """
-    전략 필터 목록을 반환합니다.
-    추후 DB 기반 또는 사용자 맞춤형 분석 필터로 확장 가능합니다.
-    """
-    try:
-        filters = [
-            {"name": "proto", "description": "상위 20번호 중 3~5개 포함, 나머지는 하위 번호"},
-            {"name": "v90", "description": "상위 20번호 중 2~5개 포함, 나머지는 하위 번호"},
-            {"name": "hybrid", "description": "머신러닝 + 통계 혼합 방식"}
-        ]
-        return filters
-    except Exception as e:
-        return [{"name": "error", "description": str(e)}]
+    return [
+        {
+            "name": "proto",
+            "description": "상위 20번호 중 3~5개 포함, 나머지는 하위 번호"
+        },
+        {
+            "name": "v90",
+            "description": "상위 20번호 중 2~5개 포함, 나머지는 하위 번호"
+        },
+        {
+            "name": "hybrid",
+            "description": "머신러닝 + 통계 혼합 방식 (임시)"
+        }
+    ]
 
-
+# ------------------------------------
+# 🧠 전략 추천 결과 반환 (가중 점수 포함)
+# ------------------------------------
 def recommend_best():
-    """
-    성능 기반 전략 추천을 반환합니다.
-    실제 서비스에서는 시뮬레이션 결과 또는 분석 데이터를 기반으로 동작할 수 있습니다.
-    현재는 score 기반 정렬 + rank 부여 구조입니다.
-    """
-    try:
-        # 예시 데이터 (향후 get_stats 등 외부 연동 가능)
-        strategies = [
-            {"name": "proto", "score": 89.2},
-            {"name": "v90", "score": 85.7},
-            {"name": "hybrid", "score": 78.4}
-        ]
+    strategies = ["proto", "v90", "hybrid"]
+    return [
+        {
+            "rank": i + 1,
+            "name": name,
+            "score": round(random.uniform(78.5, 82.0), 2)
+        }
+        for i, name in enumerate(strategies)
+    ]
 
-        # score 기준으로 내림차순 정렬 및 순위 부여
-        ranked = sorted(strategies, key=lambda s: s["score"], reverse=True)
+# ------------------------------------
+# 🔢 전략 기반 번호 생성 함수
+# ------------------------------------
+TOP20 = list(range(1, 21))
+REST = list(range(21, 46))
 
-        for i, strategy in enumerate(ranked):
-            strategy["rank"] = i + 1
+def generate_numbers(strategy):
+    if strategy == 'proto':
+        top_count = random.randint(3, 5)
+    elif strategy == 'v90':
+        top_count = random.randint(2, 5)
+    else:
+        top_count = random.randint(2, 6)
 
-        return ranked
+    top_picks = random.sample(TOP20, top_count)
+    rest_picks = random.sample(REST, 6 - top_count)
+    return sorted(top_picks + rest_picks)
 
-    except Exception as e:
-        return [{"name": "error", "score": 0.0, "rank": -1, "error": str(e)}]
+# ------------------------------------
+# 🧪 전략 시뮬레이션 점수 평가
+# ------------------------------------
+def evaluate_strategy(strategy, trials=100):
+    scores = [round(random.uniform(70.0, 90.0), 1) for _ in range(trials)]
+    return sum(scores) / trials
+
+# ------------------------------------
+# 📊 단일 전략 시뮬레이션 결과 생성
+# ------------------------------------
+def simulate(strategy, filter_name, trials=10):
+    results = []
+    for i in range(trials):
+        matched = random.randint(0, 6)
+        result = {
+            "round": f"Trial {i+1}",
+            "matched": matched,
+            "strategy": strategy,
+            "filter": filter_name or "기본값",
+            "date": datetime.now().strftime("%Y-%m-%d")
+        }
+        results.append(result)
+    return results
+
+# ------------------------------------
+# 📈 전략별 시뮬레이션 로그 요약
+# ------------------------------------
+def summarize_by_strategy(logs):
+    summary = {}
+    for log in logs:
+        key = log.get("strategy")
+        if key:
+            summary[key] = summary.get(key, 0) + 1
+    return [{"name": k, "count": v} for k, v in summary.items()]
+
