@@ -1,0 +1,1 @@
+// BestStrategyBox.js placeholder

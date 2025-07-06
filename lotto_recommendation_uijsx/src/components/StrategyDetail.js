@@ -1,0 +1,1 @@
+// StrategyDetail.js placeholder

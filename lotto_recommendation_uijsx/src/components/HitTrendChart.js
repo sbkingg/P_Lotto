@@ -1,0 +1,1 @@
+// HitTrendChart.js placeholder
