@@ -89,3 +89,12 @@ def summarize_by_strategy(logs):
             summary[key] = summary.get(key, 0) + 1
     return [{"name": k, "count": v} for k, v in summary.items()]
 
+# ✅ 이 코드를 strategy_module.py 맨 아래에 추가
+def evolve_strategy(base_strategy=None):
+    evolved = []
+    for i in range(5):
+        name = f"evolved-{i+1}"
+        numbers = generate_numbers("v90")
+        score = round(random.uniform(75.0, 85.0), 2)
+        evolved.append({"name": name, "numbers": numbers, "score": score})
+    return evolved
